@@ -40,6 +40,7 @@ main:
 fib:
     bgt $a0, 1, fib_recurse # if n < 2, then just return a 1,
     li $v0, 1 # don’t build a stack frame.
+    li $v1, 1
     jr $ra
     # otherwise, set things up to handle
 fib_recurse: # the recursive case:
@@ -48,23 +49,12 @@ fib_recurse: # the recursive case:
     sw $fp, 24($sp) # preserve the Frame Pointer.
     addu $fp, $sp, 32 # move Frame Pointer to new base.
 
-    move $t0, $a0 # get n from caller.
-
     # compute fib (n - 1):
-    sw $t0, 20($sp) # preserve n.
-    sub $a0, $t0, 1 # compute fib (n - 1)
+    sub $a0, $a0, 1 # compute fib (n - 1)
     jal fib
-    move $t1, $v0 # t1 = fib (n - 1)
-    lw $t0, 20($sp) # restore n.
 
-    # compute fib (n - 2):
-    sw $t1, 16($sp) # preserve $t1.
-    sub $a0, $t0, 2 # compute fib (n - 2)
-    jal fib
-    move $t2, $v0 # t2 = fib (n - 2)
-    lw $t1, 16($sp) # restore $t1.
-
-    add $v0, $t1, $t2 # $v0 = fib (n - 1) + fib (n - 2)
+    add $v0, $v0, $v1 # $v0 = fib (n - 1) + fib (n - 2)
+    sub $v1, $v0, $v1 # $v1 = fib (n - 1)
     lw $ra, 28($sp) # restore Return Address.
     lw $fp, 24($sp) # restore Frame Pointer.
     addu $sp, $sp, 32 # restore Stack Pointer.
