@@ -9,8 +9,8 @@
 
 sumn:
 	#返回地址压栈
-	subu	   $sp,$sp,8
-	sw       $ra,8($sp)
+	subu	   $sp,$sp,32
+	sw       $ra,32($sp)
 
 	#sum=0
 	or        $t3,$0,$0
@@ -23,8 +23,8 @@ branch:
 
 	# else exit
 	or         $v0,$0,$t3
-	lw         $ra,8($sp)
-	addu     $sp,$sp,8
+	lw         $ra,32($sp)
+	addu     $sp,$sp,32
 	jr          $ra
 
 
