@@ -119,14 +119,7 @@ main:
 
 ```mips
 .data
-    str1:  .asciiz "Please enter 1st number: " 
-    str2:  .asciiz "Please enter 2nd number: " 
-    res:  .asciiz "The result of "
-    charand:  .asciiz " & "
-    is:  .asciiz " is: "
-    ques:  .asciiz "Do you want to try another(0—continue/1—exit): "
-    newline: .asciiz "\n"
-
+    # 定义了str1，str2，res等输出字符串
 
 .text   
 .globl main
@@ -142,15 +135,7 @@ main :    # Program starts at main.
     syscall
     or  $t0, $0, $v0  # save num1 to $t0
 
-    # print str2
-    la     $a0,str2
-    li $v0,4
-    syscall
-
-    # get num2
-    li  $v0,5
-    syscall
-    or  $t1, $0, $v0  # save num2 to $t1
+    # ......类似地输入num2
 
     # add two numbers
     add $t2, $t0, $t1 # Register $t2 gets num1+num2
@@ -202,7 +187,6 @@ main :    # Program starts at main.
 
     # loop if 0
     beq $v0,$zero,main
-
 
     ori $v0, $0, 10 # Prepare to exit
     syscall   #   ... Exit.
@@ -302,40 +286,7 @@ main函数实现对数组元素求和并输出，过程中需调用sumn函数。
         ori         $t1,$0,9
         sw          $t1,arr($t0)
 
-        # array[1]
-        addu      $t0,$t0,4
-        ori         $t1,$0,7
-        sw          $t1,arr($t0)
-
-        # array[2]
-        addu      $t0,$t0,4
-        ori         $t1,$0,15
-        sw          $t1,arr($t0)
-
-        # array[3]
-        addu      $t0,$t0,4
-        ori         $t1,$0,19
-        sw          $t1,arr($t0)
-
-        # array[4]
-        addu      $t0,$t0,4
-        ori         $t1,$0,20
-        sw          $t1,arr($t0)
-
-        # array[5]
-        addu      $t0,$t0,4
-        ori         $t1,$0,30
-        sw          $t1,arr($t0)
-        
-        # array[6]
-        addu      $t0,$t0,4
-        ori         $t1,$0,11
-        sw          $t1,arr($t0)
-
-        # array[7]
-        addu      $t0,$t0,4
-        ori         $t1,$0,18
-        sw          $t1,arr($t0)
+        # 类似地初始化arr[1]~arr[7]
 
         # N=8
         ori         $t2,$0,8
@@ -407,6 +358,7 @@ fib_recurse: # the recursive case:
 ```
 
 #### 运行结果
+
 ![3](3.png)
 
 ## 实验总结
