@@ -369,3 +369,48 @@ main函数实现对数组元素求和并输出，过程中需调用sumn函数。
 ![2](2.png)
 
 ### 4.代码优化
+
+#### 优化思路
+  
+* fib-o.asm两次调用fib函数，因此需要用栈保存fib(n-1)的结果、参数n（向栈存和读各需一条指令），且计算fib(n)的调用次数约为O(fib(n))，分析发现计算fib(n-1)的过程已经计算了fib(n-2)，那么可以计算fib(n-1)后保留fib(n-2)的结果。
+
+* 因此可以让fib函数返回$fib_n$和$fib_{n-1}$两个数，即将第二个返回值保存到$$v1$寄存器。而$fib_n$为fib(n-1)的两个返回值之和
+
+* 这样每次只需一次递归就能计算出结果，总的调用次数为n，并且无需用栈保存n和$fib_{n-1}$
+
+#### 主要代码
+
+```mips
+fib:
+    bgt $a0, 1, fib_recurse # if n < 2, then just return a 1,
+    li $v0, 1 # don’t build a stack frame.
+    li $v1, 1
+    jr $ra
+    # otherwise, set things up to handle
+
+fib_recurse: # the recursive case:
+    subu $sp, $sp, 32 # frame size = 32, just because...
+    sw $ra, 28($sp) # preserve the Return Address.
+    sw $fp, 24($sp) # preserve the Frame Pointer.
+    addu $fp, $sp, 32 # move Frame Pointer to new base.
+
+    # compute fib (n - 1):
+    sub $a0, $a0, 1 # compute fib (n - 1)
+    jal fib
+
+    add $v0, $v0, $v1 # $v0 = fib (n - 1) + fib (n - 2)
+    sub $v1, $v0, $v1 # $v1 = fib (n - 1)
+    lw $ra, 28($sp) # restore Return Address.
+    lw $fp, 24($sp) # restore Frame Pointer.
+    addu $sp, $sp, 32 # restore Stack Pointer.
+    jr $ra          # return.
+```
+
+#### 运行结果
+![3](3.png)
+
+## 实验总结
+
+* 掌握了简单的MIPS程序设计
+* 对过程调用有了更深入的理解，能够从底层分析函数的优化思路
+* 未解决的问题：参考教材上说可以通过命令行运行.asm文件，并显示运行时间，这样可以更好的分析代码优化程度，但我不知道如何使用
