@@ -5,6 +5,5 @@
 *.docx
 *.json
 /resources
-/Lab/lab2/cpu
-!*.sv
-!*.dat
+/Lab/lab2/cpu/*
+!/Lab/lab2/cpu/cpu.srcs
