@@ -5,3 +5,6 @@
 *.docx
 *.json
 /resources
+/Lab/lab2/cpu
+!*.sv
+!*.dat
