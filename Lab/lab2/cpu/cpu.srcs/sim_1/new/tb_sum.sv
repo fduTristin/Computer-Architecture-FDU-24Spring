@@ -49,10 +49,10 @@ module tb_sum();
                 $stop;
             end
 
-        // else if(dataadr !== 48) begin
-        //         $display("Simulation failed");
-        //         $stop;
-        //     end
+        else if(dataadr !== 48) begin
+                $display("Simulation failed");
+                $stop;
+            end
         end
     end
 endmodule

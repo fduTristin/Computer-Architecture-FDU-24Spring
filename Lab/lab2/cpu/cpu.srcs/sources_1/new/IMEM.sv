@@ -30,7 +30,7 @@ module IMEM(
     initial
         begin
         //initialize memory
-        $readmemh ("testIO.dat",RAM);
+        $readmemh ("sum.dat",RAM);
         end
         
     assign rd = RAM[addr];

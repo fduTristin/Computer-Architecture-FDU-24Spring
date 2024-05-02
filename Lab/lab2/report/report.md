@@ -161,7 +161,7 @@
 
 * 转为机器码
 
-  ```
+  ```asm
   00004025
   34090009
   ad090000
@@ -230,3 +230,107 @@
 * 未解决的问题
   * 我还编写了一个求和`sum.dat`文件，由于时间限制模拟未成功
   * 2.4部分的仿真led始终为0，寻找问题多次无果，但因上板实验成功，猜测不是底层逻辑问题，应是上层仿真文件或者IO逻辑问题
+
+* 进度更新：2024/5/2
+  * sum.dat仿真测试
+    * 编写了`sum.asm`文件如下
+
+      ```asm
+      main:
+          # 初始化寄存器
+          addi $t0, $zero, 1          # $t0 存储当前要累加的数值
+          addi $t1, $zero, 0          # $t1 用于累加和的结果
+
+      loop:
+          # 将当前数值累加到结果中
+          add $t1, $t1, $t0
+
+          # 增加当前数值
+          addi $t0, $t0, 1
+
+          # 检查是否已经计算到10
+          slti $t2, $t0, 11       # 11是计算到10
+          bne $t2, $zero, loop       # 如果当前数值小于11，则继续循环
+
+          # 存储结果
+          sw $t1, 48($zero)
+      ```
+
+    * 转为机器码：`sum.dat`
+
+      ```dat
+      20080001
+      20090000
+      01284820
+      21080001
+      290a000b
+      1540fffc
+      ac090030
+      ```
+
+    * 编写`tb_sum.sv`文件以供测试
+
+      ```verilog
+      module tb_sum();
+
+          logic clk;
+          logic reset;
+          logic [31:0] writedata;
+          logic [31:0] dataadr;
+          logic memwrite;
+        
+        
+          top dut(clk,reset,writedata,dataadr,memwrite);
+          
+          initial 
+          begin
+              reset <= 1; #22; reset <= 0; 
+          end
+              
+        always 
+        begin
+          clk <= 1;# 5;clk <= 0;# 5;
+        end
+        
+        always@(posedge clk)
+          begin 
+              if(memwrite) begin
+                  if(dataadr === 48 & writedata === 55) begin 
+                      $display("Simulation succeeded!");
+                      $stop;
+                  end
+
+              else if(dataadr !== 48) begin
+                      $display("Simulation failed");
+                      $stop;
+                  end
+              end
+          end
+      endmodule
+      ```
+
+    * 测试结果
+
+      ![12](pic/12.png)
+
+  * `testIO.dat`文件的测试
+    * 问题所在：与设想的不同，恰恰是底层逻辑的问题，只不过在之前的测试中可能都恰好规避了这一点。事实上是`alu.sv`文件的逻辑问题，对于`alucont`的case，应使用阻塞赋值。因此代码应该修改为：
+
+      ```verilog
+      module ALU(input  logic  [31:0] a,b,
+                 input  logic  [2:0] alucont,
+                 output logic  [31:0] result,
+                 output  logic zero);
+                
+          always_comb
+          case(alucont)
+          3'b010:result = a + b;
+          3'b110:result = a - b;
+          3'b000:result = a & b;
+          3'b001:result = a | b;
+          3'b111:result = ((a < b) ? 1 : 0);
+          endcase
+          
+          assign zero = result == 0;
+      endmodule
+      ```
