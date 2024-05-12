@@ -7,3 +7,5 @@
 /resources
 /Lab/lab2/cpu/*
 !/Lab/lab2/cpu/cpu.srcs
+/Lab/lab3/cpu/*
+!/Lab/lab3/cpu/cpu.srcs
