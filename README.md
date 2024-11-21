@@ -78,7 +78,7 @@ int main()
 
 请仔细阅读参考文献的第3章，编写一个名为fib-op.asm文件，使得其性能优于fib-o.asm；并解释为什么
 
-### lab2 单周期MIP处理器
+### lab2 单周期MIPS处理器
 
 #### 实验目的
 
@@ -109,3 +109,43 @@ int main()
 ##### 3.验证
 
 ##### 4.板上验证
+
+### lab3 多周期MIPS处理器
+
+#### 实验目的
+
+* 设计多周期处理器，包括：
+  * 完成多周期MIPS处理器的设计
+  * 在Vivado软件上进行仿真
+  * 编写MIPS代码验证多周期MIPS处理器
+  * 在NEXYS4 DDR班上进行验证
+  
+#### 实验任务
+
+##### 1. 设计多周期MIPS处理器
+
+多周期MIPS处理器包含的指令（共15条）如下：
+
+* add,sub,addi
+* and,or,andi,ori
+* slt,slti
+* sw,lw
+* beq,bne
+* j
+* nop
+
+##### 2. 仿真
+
+##### 3. 验证
+
+##### 4. 板上验证
+
+### lab4 构建cache模拟器
+
+#### 实验目的
+
+* 完成cache模拟器
+* 理解cache块大小对cache性能的影响
+* 理解cache总大小对cache性能的影响
+* 理解cache替换策略对cache性能的影响
+* 理解cache写回策略对cache性能的影响
